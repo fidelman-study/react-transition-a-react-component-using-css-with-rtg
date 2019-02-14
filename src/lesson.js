@@ -82,7 +82,7 @@ class App extends React.Component {
         </ul>
         <div className="favorites">
           <p>My Favorites:</p>
-          <TransitionGroup>
+          <TransitionGroup component="ul">
             {this.state.favorites.map(
               ({ id, name }) => (
                 <CSSTransition
@@ -90,9 +90,7 @@ class App extends React.Component {
                   classNames="fade"
                   key={id}
                 >
-                  <div className="favorite">
-                    {name}
-                  </div>
+                  <li className="favorite">{name}</li>
                 </CSSTransition>
               )
             )}
