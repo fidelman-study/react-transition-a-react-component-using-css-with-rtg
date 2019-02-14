@@ -55,6 +55,11 @@
   padding: 5px 0;
 }
 
+.list-item--active {
+  color: green;
+  transition: color 250ms;
+}
+
 .balloon-enter {
   top: var(--menu-starting-top);
   width: var(--toggler-width);

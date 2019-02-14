@@ -6,11 +6,18 @@ import './lesson.css';
 class App extends Component {
   state = {
     showBalloon: false,
+    highlightedMenuItem: false,
   };
 
   toggle = () => {
     this.setState(prevState => ({
       showBalloon: !prevState.showBalloon,
+    }));
+  };
+
+  toggleHighlightedMenuItem = () => {
+    this.setState(({ highlightedMenuItem }) => ({
+      highlightedMenuItem: !highlightedMenuItem,
     }));
   };
 
@@ -30,13 +37,20 @@ class App extends Component {
           timeout={350}
           classNames="balloon"
           unmountOnExit
-          enter={false}
-          exit={false}
+          onEntered={this.toggleHighlightedMenuItem}
+          onExit={this.toggleHighlightedMenuItem}
         >
           <div className="menu">
             <ul className="list">
               <li className="list-item">Home</li>
-              <li className="list-item">Profile</li>
+              <li
+                className={cx('list-item', {
+                  'list-item--active': this.state
+                    .highlightedMenuItem,
+                })}
+              >
+                Profile
+              </li>
               <li className="list-item">Favorites</li>
               <li className="list-item">Sign out</li>
             </ul>
