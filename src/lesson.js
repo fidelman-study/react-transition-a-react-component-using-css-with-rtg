@@ -1,34 +1,12 @@
 import React, { Component } from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Link,
-} from 'react-router-dom';
-import {
-  CSSTransition,
-  TransitionGroup,
-} from 'react-transition-group';
+import { CSSTransition } from 'react-transition-group';
 import cx from 'classnames';
-import Home from './components/home';
-import Profile from './components/profile';
-import Favorites from './components/favorites';
-import './lesson.css';
-
-class Base extends Component {
-  render() {
-    return (
-      <Router>
-        <Route component={App} />
-      </Router>
-    );
-  }
-}
+import styles from './styles';
+import injectSheet from 'react-jss';
 
 class App extends Component {
   state = {
     showBalloon: false,
-    highlightedMenuItem: false,
   };
 
   toggle = () => {
@@ -37,24 +15,14 @@ class App extends Component {
     }));
   };
 
-  toggleHighlightedMenuItem = () => {
-    this.setState(({ highlightedMenuItem }) => ({
-      highlightedMenuItem: !highlightedMenuItem,
-    }));
-  };
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.location !== this.props.location) {
-      this.setState({ showBalloon: false });
-    }
-  }
-
   render() {
+    const { classes } = this.props;
     return (
-      <div className="container">
+      <div className={classes.container}>
         <button
-          className={cx('toggler', {
-            'toggler--active': this.state.showBalloon,
+          className={cx(classes.toggler, {
+            [classes.togglerActive]: this.state
+              .showBalloon,
           })}
           onClick={this.toggle}
         >
@@ -63,56 +31,38 @@ class App extends Component {
         <CSSTransition
           in={this.state.showBalloon}
           timeout={350}
-          classNames="balloon"
           unmountOnExit
-          onEntered={this.toggleHighlightedMenuItem}
-          onExit={this.toggleHighlightedMenuItem}
+          classNames={{
+            enter: classes.balloonEnter,
+            enterActive: classes.balloonEnterActive,
+            exit: classes.balloonExit,
+            exitActive: classes.balloonExitActive,
+          }}
         >
-          <div className="menu">
-            <ul className="list">
-              <li className="list-item">
-                <Link to="/">Home</Link>
-              </li>
-              <li className="list-item">
-                <Link to="/profile">Profile</Link>
-              </li>
-              <li className="list-item">
-                <Link to="/favorites">Favorites</Link>
-              </li>
-              <li className="list-item">Sign out</li>
-            </ul>
-          </div>
-        </CSSTransition>
-        <TransitionGroup>
-          <CSSTransition
-            key={this.props.location.key}
-            classNames="swipe"
-            timeout={500}
-          >
-            <div className="swipe-container">
-              <Switch>
-                <Route
-                  exact
-                  path="/"
-                  component={Home}
-                />
-                <Route
-                  exact
-                  path="/profile"
-                  component={Profile}
-                />
-                <Route
-                  exact
-                  path="/favorites"
-                  component={Favorites}
-                />
-              </Switch>
+          {status => (
+            <div className={classes.menu}>
+              <ul className={classes.list}>
+                <li className={classes.listItem}>
+                  Home
+                </li>
+                <li className={classes.listItem}>
+                  Profile
+                </li>
+                <li className={classes.listItem}>
+                  Favorites
+                </li>
+                <li className={classes.listItem}>
+                  Sign out
+                </li>
+              </ul>
             </div>
-          </CSSTransition>
-        </TransitionGroup>
+          )}
+        </CSSTransition>
       </div>
     );
   }
 }
 
-export default Base;
+const StyledApp = injectSheet(styles)(App);
+
+export default StyledApp;
