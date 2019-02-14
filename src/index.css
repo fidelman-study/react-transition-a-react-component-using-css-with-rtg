@@ -1,5 +1,29 @@
+:root {
+  --timeout: 500ms;
+  --list-item-max-height: 30px;
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+}
+
+.fade-enter {
+  max-width: 0;
+  opacity: 0;
+}
+.fade-enter-active {
+  max-height: var(--list-item-max-height);
+  opacity: 1;
+  transition: all var(--timeout);
+}
+.fade-exit {
+  max-height: var(--list-item-max-height);
+  opacity: 1;
+}
+.fade-exit-active {
+  max-width: 0;
+  opacity: 0;
+  transition: all var(--timeout);
 }

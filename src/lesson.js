@@ -1,61 +1,103 @@
-import React, { Component } from 'react';
-import { CSSTransition } from 'react-transition-group';
-import cx from 'classnames';
-import './lesson.css';
+import React from 'react';
+import uuid from 'uuid';
+import {
+  CSSTransition,
+  TransitionGroup,
+} from 'react-transition-group';
+import './index.css';
 
-class App extends Component {
+class App extends React.Component {
+  items = [
+    {
+      name: 'Potato',
+      id: uuid(),
+    },
+    {
+      name: 'Carrot',
+      id: uuid(),
+    },
+    {
+      name: 'Pepper',
+      id: uuid(),
+    },
+    {
+      name: 'Eggplant',
+      id: uuid(),
+    },
+    {
+      name: 'Onion',
+      id: uuid(),
+    },
+    {
+      name: 'Garlic',
+      id: uuid(),
+    },
+  ];
+
   state = {
-    showBalloon: false,
-    highlightedMenuItem: false,
+    favorites: [],
   };
 
-  toggle = () => {
-    this.setState(prevState => ({
-      showBalloon: !prevState.showBalloon,
-    }));
-  };
+  toggleInFavorites = id => {
+    let favorites;
+    const isItemInFavorites = this.state.favorites.some(
+      favorite => favorite.id === id
+    );
+    if (isItemInFavorites) {
+      favorites = this.state.favorites.filter(
+        favorite => favorite.id !== id
+      );
+    } else {
+      favorites = [
+        ...this.state.favorites,
+        this.items.find(item => item.id === id),
+      ];
+    }
 
-  toggleHighlightedMenuItem = () => {
-    this.setState(({ highlightedMenuItem }) => ({
-      highlightedMenuItem: !highlightedMenuItem,
-    }));
+    this.setState({ favorites });
   };
 
   render() {
     return (
       <div className="container">
-        <button
-          className={cx('toggler', {
-            'toggler--active': this.state.showBalloon,
-          })}
-          onClick={this.toggle}
-        >
-          Menu
-        </button>
-        <CSSTransition
-          in={this.state.showBalloon}
-          timeout={350}
-          classNames="balloon"
-          unmountOnExit
-          onEntered={this.toggleHighlightedMenuItem}
-          onExit={this.toggleHighlightedMenuItem}
-        >
-          <div className="menu">
-            <ul className="list">
-              <li className="list-item">Home</li>
-              <li
-                className={cx('list-item', {
-                  'list-item--active': this.state
-                    .highlightedMenuItem,
-                })}
-              >
-                Profile
-              </li>
-              <li className="list-item">Favorites</li>
-              <li className="list-item">Sign out</li>
-            </ul>
-          </div>
-        </CSSTransition>
+        <ul className="ingredients">
+          {this.items.map(({ id, name }) => (
+            <li
+              key={id}
+              className="ingredient"
+              onClick={() =>
+                this.toggleInFavorites(id)
+              }
+            >
+              {name}
+              <span className="star">
+                {this.state.favorites.some(
+                  favorite => favorite.id === id
+                )
+                  ? '🌟'
+                  : '⭐'}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <div className="favorites">
+          <p>My Favorites:</p>
+          <TransitionGroup>
+            {this.state.favorites.map(
+              ({ id, name }) => (
+                <CSSTransition
+                  timeout={500}
+                  classNames="fade"
+                  key={id}
+                >
+                  <div className="favorite">
+                    {name}
+                  </div>
+                </CSSTransition>
+              )
+            )}
+          </TransitionGroup>
+        </div>
       </div>
     );
   }
