@@ -5,7 +5,7 @@ import './lesson.css';
 
 class App extends Component {
   state = {
-    showBalloon: true,
+    showBalloon: false,
   };
 
   toggle = () => {
@@ -30,7 +30,8 @@ class App extends Component {
           timeout={350}
           classNames="balloon"
           unmountOnExit
-          appear
+          enter={false}
+          exit={false}
         >
           <div className="menu">
             <ul className="list">

@@ -55,8 +55,7 @@
   padding: 5px 0;
 }
 
-.balloon-enter,
-.balloon-appear {
+.balloon-enter {
   top: var(--menu-starting-top);
   width: var(--toggler-width);
   max-height: var(--toggler-height);
@@ -64,8 +63,7 @@
   background-color: var(--toggler-bg-color);
 }
 
-.balloon-enter-active,
-.balloon-appear-active {
+.balloon-enter-active {
   top: var(--menu-ending-top);
   width: var(--menu-width);
   max-height: var(--menu-max-height);
