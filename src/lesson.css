@@ -93,3 +93,26 @@
   background-color: var(--toggler-bg-color);
   transition: all var(--timeout);
 }
+
+.swipe-container {
+  position: absolute;
+}
+
+.swipe-enter {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+.swipe-enter-active {
+  opacity: 1;
+  transform: translateX(0%);
+  transition: all 500ms;
+}
+.swipe-exit {
+  opacity: 1;
+  transform: translateX(0%);
+}
+.swipe-exit-active {
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 500ms;
+}

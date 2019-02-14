@@ -1,104 +1,118 @@
-import React from 'react';
-import uuid from 'uuid';
+import React, { Component } from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Link,
+} from 'react-router-dom';
 import {
   CSSTransition,
   TransitionGroup,
 } from 'react-transition-group';
-import './index.css';
+import cx from 'classnames';
+import Home from './components/home';
+import Profile from './components/profile';
+import Favorites from './components/favorites';
+import './lesson.css';
 
-class App extends React.Component {
-  items = [
-    {
-      name: 'Potato',
-      id: uuid(),
-    },
-    {
-      name: 'Carrot',
-      id: uuid(),
-    },
-    {
-      name: 'Pepper',
-      id: uuid(),
-    },
-    {
-      name: 'Eggplant',
-      id: uuid(),
-    },
-    {
-      name: 'Onion',
-      id: uuid(),
-    },
-    {
-      name: 'Garlic',
-      id: uuid(),
-    },
-  ];
-
-  state = {
-    favorites: [],
-  };
-
-  toggleInFavorites = id => {
-    let favorites;
-    const isItemInFavorites = this.state.favorites.some(
-      favorite => favorite.id === id
+class Base extends Component {
+  render() {
+    return (
+      <Router>
+        <Route component={App} />
+      </Router>
     );
-    if (isItemInFavorites) {
-      favorites = this.state.favorites.filter(
-        favorite => favorite.id !== id
-      );
-    } else {
-      favorites = [
-        ...this.state.favorites,
-        this.items.find(item => item.id === id),
-      ];
-    }
+  }
+}
 
-    this.setState({ favorites });
+class App extends Component {
+  state = {
+    showBalloon: false,
+    highlightedMenuItem: false,
   };
+
+  toggle = () => {
+    this.setState(prevState => ({
+      showBalloon: !prevState.showBalloon,
+    }));
+  };
+
+  toggleHighlightedMenuItem = () => {
+    this.setState(({ highlightedMenuItem }) => ({
+      highlightedMenuItem: !highlightedMenuItem,
+    }));
+  };
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location !== this.props.location) {
+      this.setState({ showBalloon: false });
+    }
+  }
 
   render() {
     return (
       <div className="container">
-        <ul className="ingredients">
-          {this.items.map(({ id, name }) => (
-            <li
-              key={id}
-              className="ingredient"
-              onClick={() =>
-                this.toggleInFavorites(id)
-              }
-            >
-              {name}
-              <span className="star">
-                {this.state.favorites.some(
-                  favorite => favorite.id === id
-                )
-                  ? '🌟'
-                  : '⭐'}
-              </span>
-            </li>
-          ))}
-        </ul>
-        <div className="favorites">
-          <p>My Favorites:</p>
-          <TransitionGroup component="ul">
-            {this.state.favorites.map(
-              ({ id, name }) => (
-                <CSSTransition
-                  timeout={500}
-                  classNames="fade"
-                  key={id}
-                >
-                  <li className="favorite">{name}</li>
-                </CSSTransition>
-              )
-            )}
-          </TransitionGroup>
-        </div>
+        <button
+          className={cx('toggler', {
+            'toggler--active': this.state.showBalloon,
+          })}
+          onClick={this.toggle}
+        >
+          Menu
+        </button>
+        <CSSTransition
+          in={this.state.showBalloon}
+          timeout={350}
+          classNames="balloon"
+          unmountOnExit
+          onEntered={this.toggleHighlightedMenuItem}
+          onExit={this.toggleHighlightedMenuItem}
+        >
+          <div className="menu">
+            <ul className="list">
+              <li className="list-item">
+                <Link to="/">Home</Link>
+              </li>
+              <li className="list-item">
+                <Link to="/profile">Profile</Link>
+              </li>
+              <li className="list-item">
+                <Link to="/favorites">Favorites</Link>
+              </li>
+              <li className="list-item">Sign out</li>
+            </ul>
+          </div>
+        </CSSTransition>
+        <TransitionGroup>
+          <CSSTransition
+            key={this.props.location.key}
+            classNames="swipe"
+            timeout={500}
+          >
+            <div className="swipe-container">
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  component={Home}
+                />
+                <Route
+                  exact
+                  path="/profile"
+                  component={Profile}
+                />
+                <Route
+                  exact
+                  path="/favorites"
+                  component={Favorites}
+                />
+              </Switch>
+            </div>
+          </CSSTransition>
+        </TransitionGroup>
       </div>
     );
   }
 }
 
-export default App;
+export default Base;
