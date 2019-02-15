@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import { CSSTransition } from 'react-transition-group';
-import cx from 'classnames';
-import styles from './styles';
-import injectSheet from 'react-jss';
+import {
+  Container,
+  Toggler,
+  List,
+  ListItem,
+  Menu,
+} from './components';
 
 class App extends Component {
   state = {
@@ -16,53 +19,29 @@ class App extends Component {
   };
 
   render() {
-    const { classes } = this.props;
     return (
-      <div className={classes.container}>
-        <button
-          className={cx(classes.toggler, {
-            [classes.togglerActive]: this.state
-              .showBalloon,
-          })}
+      <Container>
+        <Toggler
+          active={this.state.showBalloon}
           onClick={this.toggle}
         >
           Menu
-        </button>
-        <CSSTransition
+        </Toggler>
+        <Menu
           in={this.state.showBalloon}
           timeout={350}
           unmountOnExit
-          classNames={{
-            enter: classes.balloonEnter,
-            enterActive: classes.balloonEnterActive,
-            exit: classes.balloonExit,
-            exitActive: classes.balloonExitActive,
-          }}
         >
-          {status => (
-            <div className={classes.menu}>
-              <ul className={classes.list}>
-                <li className={classes.listItem}>
-                  Home
-                </li>
-                <li className={classes.listItem}>
-                  Profile
-                </li>
-                <li className={classes.listItem}>
-                  Favorites
-                </li>
-                <li className={classes.listItem}>
-                  Sign out
-                </li>
-              </ul>
-            </div>
-          )}
-        </CSSTransition>
-      </div>
+          <List>
+            <ListItem>Home</ListItem>
+            <ListItem>Profile</ListItem>
+            <ListItem>Favorites</ListItem>
+            <ListItem>Sign out</ListItem>
+          </List>
+        </Menu>
+      </Container>
     );
   }
 }
 
-const StyledApp = injectSheet(styles)(App);
-
-export default StyledApp;
+export default App;
